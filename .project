@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>Android-inTime</name>
+=======
+	<name>Android-InTime</name>
+>>>>>>> 69c7f6a6dfb0361065b836d8c61fd2d42ba19e0d
 	<comment></comment>
 	<projects>
 	</projects>
@@ -25,9 +29,21 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+<<<<<<< HEAD
+=======
+		<buildCommand>
+			<name>edu.ksu.cis.agenttool.validation.at3ValidationBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+>>>>>>> 69c7f6a6dfb0361065b836d8c61fd2d42ba19e0d
 	</buildSpec>
 	<natures>
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+<<<<<<< HEAD
+=======
+		<nature>edu.ksu.cis.agenttool.validation.at3ValidationNature</nature>
+>>>>>>> 69c7f6a6dfb0361065b836d8c61fd2d42ba19e0d
 	</natures>
 </projectDescription>
