@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Wellcome, You are just InTime</string>
+    <string name="app_name">InTime</string>
+    <string name="empty">Nothing to show</string>
+	<string name="button_login">Login</string>
+	<string name="button_start">Start</string>
+	<string name="form_username">Username</string>
+	<string name="form_password">Password</string>
+	<string name="form_button_login">Username</string>
+	<string name="button_stop_update">Stop</string>
+	
+</resources>
