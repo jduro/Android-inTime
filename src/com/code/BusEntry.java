@@ -19,6 +19,12 @@ public final class BusEntry {
 		this.timeleft = timeleft;
 		this.icon = icon;
 	}
+	
+	public BusEntry(String id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
 
 	/**
 	 * @return Title of news entry

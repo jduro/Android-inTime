@@ -197,37 +197,52 @@ public class ListBusActivity extends Activity {
             content.close();
             json = sb.toString();
             
-            // Create JSONObject
-            jObj = new JSONObject(json);
             
-            // JSON to BusEntry array
-            buses = jObj.getJSONArray("buses");
-            String id;
-            String name;
-            
-			for(int i=0;i < buses.length();i++)
-			{
-				// TO DO - NAO TESTADO
-				for(int j=0;j < buses.length(); j++)
-				{
-					JSONObject jBus = (JSONObject)buses.get(j);
-					id = jBus.get("id").toString();
-					name = jBus.get("name").toString();
-					
-					entries.add(new BusEntry(id, name, "AAA", "BBB", R.drawable.news_icon_1));
+            //Parse JSON
+            JSONArray jArray=new JSONArray(json);
+            if(jArray.length()==0)
+				status.setText("No bus stops around!");
+			else{
+				JSONObject jObject=(JSONObject) jArray.get(0);
+				String name=jObject.get("name").toString();
+				JSONArray jBuses=jObject.getJSONArray("buses");
+				//name e id
+				status.setText(name);
+				for(int j=0;j<jBuses.length();j++){
+					JSONObject jBus=(JSONObject)jBuses.get(j);
+//						str=str+jBus.get("id").toString()+" "+jBus.get("name").toString();
+					entries.add(new BusEntry(jBus.get("id").toString(),jBus.get("name").toString()));
 				}
 			}
+            
+//            // JSON to BusEntry array
+//            buses = jObj.getJSONArray("buses");
+//            String id;
+//            String name;
+//            
+//			for(int i=0;i < buses.length();i++)
+//			{
+//				// TO DO - NAO TESTADO
+//				for(int j=0;j < buses.length(); j++)
+//				{
+//					JSONObject jBus = (JSONObject)buses.get(j);
+//					id = jBus.get("id").toString();
+//					name = jBus.get("name").toString();
+//					
+//					entries.add(new BusEntry(id, name, "AAA", "BBB", R.drawable.news_icon_1));
+//				}
+//			}
             
     	}
     	catch (JSONException e)
         {
-    		status.setText(e.getMessage());
+    		status.setText(json+"\n "+e.getMessage());
         }
     	catch (Exception e) 
     	{
     		status.setText(e.getMessage());
 		}
- 
+    	
         return entries;
     }
     
