@@ -32,6 +32,14 @@ public final class BusEntry implements Serializable{
 		this.name = name;
 		this.label = label;
 	}
+	
+	public BusEntry(String id, String name,String label,String timeleft) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.label = label;
+		this.timeleft=timeleft;
+	}
 
 	/**
 	 * @return Title of news entry

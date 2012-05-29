@@ -264,7 +264,8 @@ public class ListBusActivity extends Activity {
 					JSONObject jBus=(JSONObject)jBuses.get(j);
 					String id=jBus.get("id").toString();
 					String labels=jBus.get("name").toString();
-					entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3)));
+					String time=jBus.get("predicted_time").toString();
+					entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
 				}
 			}
             
