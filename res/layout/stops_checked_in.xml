@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView android:id="@+id/stopsStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:textSize="16sp"/>
+    <ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/stopslist" android:layout_below="@+id/stopsStatus"></ListView>    
+</RelativeLayout>

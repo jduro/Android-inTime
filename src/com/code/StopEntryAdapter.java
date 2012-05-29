@@ -11,11 +11,11 @@ import android.widget.TextView;
 /**
  * Adapts NewsEntry objects onto views for lists
  */
-public final class BusEntryAdapter extends ArrayAdapter<BusEntry> {
+public final class StopEntryAdapter extends ArrayAdapter<StopEntry> {
 
 	private final int newsItemLayoutResource;
 
-	public BusEntryAdapter(final Context context, final int newsItemLayoutResource) {
+	public StopEntryAdapter(final Context context, final int newsItemLayoutResource) {
 		super(context, 0);
 		this.newsItemLayoutResource = newsItemLayoutResource;
 	}
@@ -28,13 +28,12 @@ public final class BusEntryAdapter extends ArrayAdapter<BusEntry> {
 		// retrieve its corresponding ViewHolder, which optimizes lookup efficiency
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final BusEntry entry = getItem(position);
+		final StopEntry entry = getItem(position);
 		
 		// Setting the views is straightforward
-		viewHolder.busIdView.setText(entry.getId());
-		viewHolder.busNameView.setText(entry.getName());
-		viewHolder.destinyView.setText(entry.getLabel());
-		viewHolder.timeleftView.setText(entry.getTimeleft()==null?"No prediction":entry.getTimeleft());
+		viewHolder.stopIdView.setText(entry.getId());
+		viewHolder.nameView.setText(entry.getName());
+		viewHolder.timeLeftView.setText(entry.getArrivalTime()==null?"No predictions":entry.getArrivalTime());
 		
 		return view;
 	}
@@ -68,10 +67,9 @@ public final class BusEntryAdapter extends ArrayAdapter<BusEntry> {
 		if(null == tag || !(tag instanceof ViewHolder)) {
 			viewHolder = new ViewHolder();
 			
-			viewHolder.destinyView = (TextView) workingView.findViewById(R.id.news_entry_title);
-			viewHolder.timeleftView = (TextView) workingView.findViewById(R.id.news_entry_subtitle);
-			viewHolder.busIdView = (TextView) workingView.findViewById(R.id.bus_entry_id);
-			viewHolder.busNameView = (TextView) workingView.findViewById(R.id.bus_entry_name);
+			viewHolder.nameView = (TextView) workingView.findViewById(R.id.bus_stop_name);
+			viewHolder.timeLeftView = (TextView) workingView.findViewById(R.id.bus_stop_time_left);
+			viewHolder.stopIdView = (TextView) workingView.findViewById(R.id.bus_stop_id);
 			
 			workingView.setTag(viewHolder);
 			
@@ -87,10 +85,9 @@ public final class BusEntryAdapter extends ArrayAdapter<BusEntry> {
 	 * Since views are recycled, these references will never change
 	 */
 	private static class ViewHolder {
-		public TextView destinyView;
-		public TextView timeleftView;
-		public TextView busIdView;
-		public TextView busNameView;
+		public TextView nameView;
+		public TextView timeLeftView;
+		public TextView stopIdView;
 	}
 	
 	

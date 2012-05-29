@@ -1,11 +1,17 @@
 package com.code;
 
+import java.io.Serializable;
+
 
 /**
  * Encapsulates information about a news entry
  */
-public final class BusEntry {
+public final class BusEntry implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
 	private String label;
@@ -20,10 +26,11 @@ public final class BusEntry {
 		this.icon = icon;
 	}
 	
-	public BusEntry(String id, String name) {
+	public BusEntry(String id, String name,String label) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.label = label;
 	}
 
 	/**

@@ -20,35 +20,45 @@ public final class R {
         public static final int news_icon_2=0x7f020006;
     }
     public static final class id {
-        public static final int btn_login=0x7f05000b;
-        public static final int bus_entry_id=0x7f050002;
-        public static final int et_pw=0x7f05000a;
-        public static final int et_un=0x7f050008;
+        public static final int btn_login=0x7f05000d;
+        public static final int bus_entry_id=0x7f050004;
+        public static final int bus_entry_name=0x7f050003;
+        public static final int bus_stop_id=0x7f050011;
+        public static final int bus_stop_name=0x7f050012;
+        public static final int bus_stop_time_left=0x7f050013;
+        public static final int et_pw=0x7f05000c;
+        public static final int et_un=0x7f05000a;
         public static final int list=0x7f050001;
         public static final int listStatus=0x7f050000;
-        public static final int mylogo=0x7f050006;
-        public static final int news_entry_subtitle=0x7f050004;
-        public static final int news_entry_title=0x7f050003;
-        public static final int scroller=0x7f050005;
-        public static final int tv_error=0x7f05000c;
-        public static final int tv_pw=0x7f050009;
-        public static final int tv_un=0x7f050007;
+        public static final int mylogo=0x7f050008;
+        public static final int news_entry_subtitle=0x7f050006;
+        public static final int news_entry_title=0x7f050005;
+        public static final int progressBar1=0x7f050002;
+        public static final int scroller=0x7f050007;
+        public static final int stopsStatus=0x7f05000f;
+        public static final int stopslist=0x7f050010;
+        public static final int tv_error=0x7f05000e;
+        public static final int tv_pw=0x7f05000b;
+        public static final int tv_un=0x7f050009;
     }
     public static final class layout {
         public static final int bus_list=0x7f030000;
         public static final int bus_list_item=0x7f030001;
         public static final int intime=0x7f030002;
         public static final int login=0x7f030003;
+        public static final int stops_checked_in=0x7f030004;
+        public static final int stops_list_item=0x7f030005;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
-        public static final int button_login=0x7f040003;
-        public static final int button_start=0x7f040004;
-        public static final int button_stop_update=0x7f040008;
-        public static final int empty=0x7f040002;
-        public static final int form_button_login=0x7f040007;
-        public static final int form_password=0x7f040006;
-        public static final int form_username=0x7f040005;
+        public static final int app_version=0x7f040002;
+        public static final int button_login=0x7f040004;
+        public static final int button_start=0x7f040005;
+        public static final int button_stop_update=0x7f040009;
+        public static final int empty=0x7f040003;
+        public static final int form_button_login=0x7f040008;
+        public static final int form_password=0x7f040007;
+        public static final int form_username=0x7f040006;
         public static final int hello=0x7f040000;
     }
 }
