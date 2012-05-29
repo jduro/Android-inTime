@@ -36,7 +36,9 @@ public class CheckedInActivity extends Activity {
 	private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 5; // in Meters
     private static final long MINIMUM_TIME_BETWEEN_UPDATES = 10000; // in Milliseconds
     
-    private static final String SERVER = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/check_in";
+    private static final String SERVER =       "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/check_in";
+    private static final String SERVER_TRACE = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/ping";
+    private static final String SERVER_OUT = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/check_out";
 	
 	protected TextView status;
 	protected LocationManager locationManager;
@@ -50,6 +52,7 @@ public class CheckedInActivity extends Activity {
 	
 	BusEntry bus;
 	StopEntry nextStop;
+	StopEntry lastStop;
 	String busStopId;
 
 	public void onCreate(Bundle savedInstanceState)
@@ -130,6 +133,30 @@ public class CheckedInActivity extends Activity {
                {
                    public void onClick(DialogInterface dialog, int id)
                    {
+                	   
+                	   HttpClient hc = new DefaultHttpClient();
+	   	    	    	HttpGet request;
+	   	    	    	HttpResponse response;
+	   	    	    	InputStream content;
+	   	    	    	int responseCode;
+	   	    	    	List<StopEntry> busList;
+	   	    	    	try
+	   	    	    	{
+	   	    	      		request = new HttpGet(SERVER_TRACE + "?bus_id="+bus.getId()+"&bus_stop_id="+lastStop.getId());
+	   	    	      		request.setHeader("Accept", "application/json");
+	   	    	      		response = hc.execute(request);
+	   	    	      		content = response.getEntity().getContent();
+	   	    	      		responseCode = response.getStatusLine().getStatusCode();
+	   	    	    	}
+	   	    	    	catch (Exception e)
+	   	    	    	{
+	   	    	    		status.setText("Problem Connecting. " + e.getMessage());
+	   	    	    	}
+	                	   
+	                	   
+	                	   
+	                	   
+                	   
                 	   locationManager.removeUpdates(locationListener2);
                 	   finish();
                    }
@@ -156,8 +183,42 @@ public class CheckedInActivity extends Activity {
 	    		double distance=Math.sqrt(Math.pow(location.getLatitude()-Double.parseDouble(nextStop.getLat()), 2)+Math.pow(location.getLongitude()-Double.parseDouble(nextStop.getLon()), 2));
 	    		if(distance>0.0002)
 	    			status.setText("Last update " + now.hour + ":" + now.minute + ":" + now.second+"\n "+distance);
-	    		else
+	    		else{
+	    			
 	    			status.setText("I'm very close biatx");
+	    			
+	    			
+	    			
+	    			
+	    			HttpClient hc = new DefaultHttpClient();
+	    	    	HttpGet request;
+	    	    	HttpResponse response;
+	    	    	InputStream content;
+	    	    	int responseCode;
+	    	    	List<StopEntry> busList;
+	    	    	try
+	    	    	{
+	    	      		request = new HttpGet(SERVER_TRACE + "?bus_id="+bus.getId()+"&bus_stop_id="+nextStop.getId());
+	    	      		request.setHeader("Accept", "application/json");
+	    	      		response = hc.execute(request);
+	    	      		content = response.getEntity().getContent();
+	    	      		responseCode = response.getStatusLine().getStatusCode();
+	    	      		
+	    	      		if(responseCode == HttpStatus.SC_OK)
+	    	      		{
+	    	      			busList = parseJSON(content);
+	    	      			lastStop=nextStop;
+	    	      			nextStop=busList.get(0);
+	    	      			updateList(busList);
+	    	      		}
+	    	      		else
+	    	      			status.setText("Code " + responseCode);
+	    	    	}
+	    	    	catch (Exception e)
+	    	    	{
+	    	    		status.setText("Problem Connecting. " + e.getMessage());
+	    	    	}
+	    		}
 	      	}
 	
 			public void onProviderDisabled(String provider) {

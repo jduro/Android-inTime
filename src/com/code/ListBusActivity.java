@@ -66,6 +66,7 @@ public class ListBusActivity extends Activity {
 	int [] listIds;
 	int choice=-1;
 	JSONArray stopsArray;
+	boolean startChoose=false;
     
     private Time now;
 	
@@ -302,50 +303,51 @@ public class ListBusActivity extends Activity {
 						}
 					//Se vier mais que um autocarro e ainda nao foi escolhido nehnum e as listas sao diferentes
 					}else{
-						
-						final CharSequence[] items = new CharSequence[jArray.length()];
-						listIds=new int[jArray.length()];
-						for(int i=0;i<jArray.length();i++){
-							JSONObject jObj=(JSONObject) jArray.get(i);
-							items[i]=jObj.get("name").toString();
-							listIds[i]=Integer.parseInt(jObj.get("id").toString());
+						if(!startChoose){
+							startChoose=true;
+							final CharSequence[] items = new CharSequence[jArray.length()];
+							listIds=new int[jArray.length()];
+							for(int i=0;i<jArray.length();i++){
+								JSONObject jObj=(JSONObject) jArray.get(i);
+								items[i]=jObj.get("name").toString();
+								listIds[i]=Integer.parseInt(jObj.get("id").toString());
+							}
+							stopsArray=jArray;
+							AlertDialog.Builder builder = new AlertDialog.Builder(this);
+							builder.setTitle("Pick a bus stop");
+							builder.setItems(items, new DialogInterface.OnClickListener() {
+							    public void onClick(DialogInterface dialog, int item) {
+	//						        Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+							    	choice=item;
+							    	startChoose=false;
+							    	try{
+								    	List<BusEntry> entries = new ArrayList<BusEntry>();
+								    	JSONObject jObject=(JSONObject) stopsArray.get(item);
+										String name=jObject.get("name").toString();
+										busStopId=jObject.get("id").toString();
+										JSONArray jBuses=jObject.getJSONArray("buses");
+										//name e id
+						//				status.setText(name);
+										setTitle(name);
+										for(int j=0;j<jBuses.length();j++){
+											JSONObject jBus=(JSONObject)jBuses.get(j);
+											String id=jBus.get("id").toString();
+											String labels=jBus.get("name").toString();
+											String time=jBus.get("predicted_time").toString();
+											entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
+										}
+										updateList(entries);
+							    	}catch(JSONException e){
+							    		status.setText(e.getMessage());
+							    	}
+							    	
+							    }
+							});
+							AlertDialog alert = builder.create();
+							alert.show();
+							
+							Toast.makeText(getApplicationContext(), items[choice], Toast.LENGTH_SHORT).show();
 						}
-						stopsArray=jArray;
-						AlertDialog.Builder builder = new AlertDialog.Builder(this);
-						builder.setTitle("Pick a bus stop");
-						builder.setItems(items, new DialogInterface.OnClickListener() {
-						    public void onClick(DialogInterface dialog, int item) {
-//						        Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
-						    	choice=item;
-						    	
-						    	try{
-							    	List<BusEntry> entries = new ArrayList<BusEntry>();
-							    	JSONObject jObject=(JSONObject) stopsArray.get(item);
-									String name=jObject.get("name").toString();
-									busStopId=jObject.get("id").toString();
-									JSONArray jBuses=jObject.getJSONArray("buses");
-									//name e id
-					//				status.setText(name);
-									setTitle(name);
-									for(int j=0;j<jBuses.length();j++){
-										JSONObject jBus=(JSONObject)jBuses.get(j);
-										String id=jBus.get("id").toString();
-										String labels=jBus.get("name").toString();
-										String time=jBus.get("predicted_time").toString();
-										entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
-									}
-									updateList(entries);
-						    	}catch(JSONException e){
-						    		status.setText(e.getMessage());
-						    	}
-						    	
-						    }
-						});
-						AlertDialog alert = builder.create();
-						alert.show();
-						
-						Toast.makeText(getApplicationContext(), items[choice], Toast.LENGTH_SHORT).show();
-						
 						
 						
 						
