@@ -62,6 +62,10 @@ public class ListBusActivity extends Activity {
 	TextView busName;
 	TextView busLabel;
 	View view;
+	
+	int [] listIds;
+	int choice=-1;
+	JSONArray stopsArray;
     
     private Time now;
 	
@@ -149,29 +153,37 @@ public class ListBusActivity extends Activity {
     @Override
     public void onBackPressed()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to go back?")
-               .setCancelable(false)
-               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-               {
-                   public void onClick(DialogInterface dialog, int id)
-                   {
-	                   	status.setText("");
-	                   	if(locationManager!=null)
-	                   		locationManager.removeUpdates(locationListener);
-	                   	ListBusActivity.this.finish();
-                   }
-               })
-               .setNegativeButton("No", new DialogInterface.OnClickListener()
-               {
-                   public void onClick(DialogInterface dialog, int id)
-                   {
-                        dialog.cancel();
-                   }
-               });
-        
-        AlertDialog alert = builder.create();
-        alert.show();
+    	if(choice>=0){
+    		choice=-1;
+    		listIds=null;
+    		Toast.makeText(getApplicationContext(), "Your choice was deleted..", Toast.LENGTH_SHORT).show();
+    	}else{
+    	
+    	
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setMessage("Are you sure you want to go back?")
+	               .setCancelable(false)
+	               .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+	               {
+	                   public void onClick(DialogInterface dialog, int id)
+	                   {
+		                   	status.setText("");
+		                   	if(locationManager!=null)
+		                   		locationManager.removeUpdates(locationListener);
+		                   	ListBusActivity.this.finish();
+	                   }
+	               })
+	               .setNegativeButton("No", new DialogInterface.OnClickListener()
+	               {
+	                   public void onClick(DialogInterface dialog, int id)
+	                   {
+	                        dialog.cancel();
+	                   }
+	               });
+	        
+	        AlertDialog alert = builder.create();
+	        alert.show();
+    	}
     }
     
     
@@ -253,19 +265,103 @@ public class ListBusActivity extends Activity {
             	
 			else{
 				pbar.setVisibility(View.INVISIBLE);
-				JSONObject jObject=(JSONObject) jArray.get(0);
-				String name=jObject.get("name").toString();
-				busStopId=jObject.get("id").toString();
-				JSONArray jBuses=jObject.getJSONArray("buses");
-				//name e id
-//				status.setText(name);
-				setTitle(name);
-				for(int j=0;j<jBuses.length();j++){
-					JSONObject jBus=(JSONObject)jBuses.get(j);
-					String id=jBus.get("id").toString();
-					String labels=jBus.get("name").toString();
-					String time=jBus.get("predicted_time").toString();
-					entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
+				//Se vier só um autocarro escolhemos esse
+				if(jArray.length()==1){
+					listIds=null;
+					choice=-1;
+					JSONObject jObject=(JSONObject) jArray.get(0);
+					String name=jObject.get("name").toString();
+					busStopId=jObject.get("id").toString();
+					JSONArray jBuses=jObject.getJSONArray("buses");
+					//name e id
+	//				status.setText(name);
+					setTitle(name);
+					for(int j=0;j<jBuses.length();j++){
+						JSONObject jBus=(JSONObject)jBuses.get(j);
+						String id=jBus.get("id").toString();
+						String labels=jBus.get("name").toString();
+						String time=jBus.get("predicted_time").toString();
+						entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
+					}
+				//Se vier mais que um autocarro e ja foi escolhido algum e a lista é igual
+				}else{
+					if(areTheyEqual(jArray)){
+						JSONObject jObject=(JSONObject) jArray.get(0);
+						String name=jObject.get("name").toString();
+						busStopId=jObject.get("id").toString();
+						JSONArray jBuses=jObject.getJSONArray("buses");
+						//name e id
+		//				status.setText(name);
+						setTitle(name);
+						for(int j=0;j<jBuses.length();j++){
+							JSONObject jBus=(JSONObject)jBuses.get(j);
+							String id=jBus.get("id").toString();
+							String labels=jBus.get("name").toString();
+							String time=jBus.get("predicted_time").toString();
+							entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
+						}
+					//Se vier mais que um autocarro e ainda nao foi escolhido nehnum e as listas sao diferentes
+					}else{
+						
+						final CharSequence[] items = new CharSequence[jArray.length()];
+						listIds=new int[jArray.length()];
+						for(int i=0;i<jArray.length();i++){
+							JSONObject jObj=(JSONObject) jArray.get(i);
+							items[i]=jObj.get("name").toString();
+							listIds[i]=Integer.parseInt(jObj.get("id").toString());
+						}
+						stopsArray=jArray;
+						AlertDialog.Builder builder = new AlertDialog.Builder(this);
+						builder.setTitle("Pick a bus stop");
+						builder.setItems(items, new DialogInterface.OnClickListener() {
+						    public void onClick(DialogInterface dialog, int item) {
+//						        Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+						    	choice=item;
+						    	
+						    	try{
+							    	List<BusEntry> entries = new ArrayList<BusEntry>();
+							    	JSONObject jObject=(JSONObject) stopsArray.get(item);
+									String name=jObject.get("name").toString();
+									busStopId=jObject.get("id").toString();
+									JSONArray jBuses=jObject.getJSONArray("buses");
+									//name e id
+					//				status.setText(name);
+									setTitle(name);
+									for(int j=0;j<jBuses.length();j++){
+										JSONObject jBus=(JSONObject)jBuses.get(j);
+										String id=jBus.get("id").toString();
+										String labels=jBus.get("name").toString();
+										String time=jBus.get("predicted_time").toString();
+										entries.add(new BusEntry(id,labels.substring(0,labels.indexOf(" - ")),labels.substring(labels.indexOf(" - ")+3),time));
+									}
+									updateList(entries);
+						    	}catch(JSONException e){
+						    		status.setText(e.getMessage());
+						    	}
+						    	
+						    }
+						});
+						AlertDialog alert = builder.create();
+						alert.show();
+						
+						Toast.makeText(getApplicationContext(), items[choice], Toast.LENGTH_SHORT).show();
+						
+						
+						
+						
+//						Toast.makeText(getApplicationContext(), "here", Toast.LENGTH_SHORT).show();
+//						AlertDialog alertDialog = new AlertDialog.Builder(this).create();  
+//					    alertDialog.setTitle("whats this?");  
+//					    alertDialog.setMessage("Please choose the bus stop where you are");
+//					    for(int i=0;i<jArray.length();i++){
+//				    		JSONObject jObj=(JSONObject) jArray.get(i);
+//						    alertDialog.setButton(jObj.get("name").toString(), new DialogInterface.OnClickListener() {  
+//						      public void onClick(DialogInterface dialog, int which) {  
+//						    	  Toast.makeText(getApplicationContext(), which, Toast.LENGTH_SHORT).show();
+//						    } });   
+//					    }
+//					    alertDialog.show();
+					}
 				}
 			}
             
@@ -280,6 +376,17 @@ public class ListBusActivity extends Activity {
 		}
     	
         return entries;
+    }
+    
+    private boolean areTheyEqual(JSONArray jArray) throws JSONException{
+    	if(listIds==null || choice==-1)
+			return false;
+    	for(int i=0;i<jArray.length();i++){
+    		JSONObject jObj=(JSONObject) jArray.get(i);
+    		if(Integer.parseInt(jObj.get("id").toString())!=listIds[i])
+				return false;
+    	}
+    	return true;
     }
     
     
