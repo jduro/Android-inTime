@@ -33,7 +33,7 @@ public final class StopEntryAdapter extends ArrayAdapter<StopEntry> {
 		// Setting the views is straightforward
 		viewHolder.stopIdView.setText(entry.getId());
 		viewHolder.nameView.setText(entry.getName());
-		viewHolder.timeLeftView.setText(entry.getArrivalTime()==null?"No predictions":entry.getArrivalTime());
+		viewHolder.timeLeftView.setText(entry.getArrivalTime()==null?"No predictions":entry.getArrivalTime()+" min");
 		
 		return view;
 	}

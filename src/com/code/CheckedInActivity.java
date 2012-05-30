@@ -19,17 +19,13 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CheckedInActivity extends Activity {
 	
@@ -37,8 +33,6 @@ public class CheckedInActivity extends Activity {
     private static final long MINIMUM_TIME_BETWEEN_UPDATES = 10000; // in Milliseconds
     
     private static final String SERVER =       "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/check_in";
-    private static final String SERVER_TRACE = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/ping";
-    private static final String SERVER_OUT = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/check_out";
 	
 	protected TextView status;
 	protected LocationManager locationManager;
@@ -134,19 +128,15 @@ public class CheckedInActivity extends Activity {
                    public void onClick(DialogInterface dialog, int id)
                    {
                 	   
-                	   HttpClient hc = new DefaultHttpClient();
+                	   	HttpClient hc = new DefaultHttpClient();
 	   	    	    	HttpGet request;
 	   	    	    	HttpResponse response;
-	   	    	    	InputStream content;
-	   	    	    	int responseCode;
-	   	    	    	List<StopEntry> busList;
+
 	   	    	    	try
 	   	    	    	{
-	   	    	      		request = new HttpGet(SERVER_TRACE + "?bus_id="+bus.getId()+"&bus_stop_id="+lastStop.getId());
+	   	    	      		request = new HttpGet(SERVER + "ping?bus_id="+bus.getId()+"&bus_stop_id="+lastStop.getId());
 	   	    	      		request.setHeader("Accept", "application/json");
 	   	    	      		response = hc.execute(request);
-	   	    	      		content = response.getEntity().getContent();
-	   	    	      		responseCode = response.getStatusLine().getStatusCode();
 	   	    	    	}
 	   	    	    	catch (Exception e)
 	   	    	    	{
@@ -198,7 +188,7 @@ public class CheckedInActivity extends Activity {
 	    	    	List<StopEntry> busList;
 	    	    	try
 	    	    	{
-	    	      		request = new HttpGet(SERVER_TRACE + "?bus_id="+bus.getId()+"&bus_stop_id="+nextStop.getId());
+	    	      		request = new HttpGet(SERVER + "ping?bus_id="+bus.getId()+"&bus_stop_id="+nextStop.getId());
 	    	      		request.setHeader("Accept", "application/json");
 	    	      		response = hc.execute(request);
 	    	      		content = response.getEntity().getContent();
@@ -273,7 +263,8 @@ public class CheckedInActivity extends Activity {
 					String name=jBus.get("name").toString();
 					String lat=jBus.get("lat").toString();
 					String lon=jBus.get("lon").toString();
-					entries.add(new StopEntry(id,name,lon,lat));
+					String predicted_time=jBus.get("predicted_time").toString();
+					entries.add(new StopEntry(id,name,lon,lat,predicted_time));
 				}
 			}
             

@@ -34,7 +34,7 @@ public final class BusEntryAdapter extends ArrayAdapter<BusEntry> {
 		viewHolder.busIdView.setText(entry.getId());
 		viewHolder.busNameView.setText(entry.getName());
 		viewHolder.destinyView.setText(entry.getLabel());
-		viewHolder.timeleftView.setText(entry.getTimeleft()==null?"No prediction":entry.getTimeleft());
+		viewHolder.timeleftView.setText(entry.getTimeleft()==null?"No prediction":entry.getTimeleft()+" min");
 		
 		return view;
 	}

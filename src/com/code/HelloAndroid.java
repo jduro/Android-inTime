@@ -10,19 +10,12 @@ public class HelloAndroid extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.intime);
     }
     
-    public void onClickAuth(View view) {
-		startActivity(new Intent(this, AuthenticateActivity.class));
-	}
-    
     public void onClickAnonymous(View view) {
 		Intent i = new Intent(this, ListBusActivity.class);
-		i.putExtra("Value1", "This value one for ActivityTwo ");
-		i.putExtra("Value2", "This value two ActivityTwo");
-		// Set the request code to any code you like, you can identify the
-		// callback via this code
 		startActivity(i);
 	}
     

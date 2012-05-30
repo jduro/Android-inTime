@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Wellcome, You are just InTime</string>
+    <string name="hello">Welcome, You are just InTime</string>
     <string name="app_name">InTime</string>
-    <string name="app_version">1.2</string>
+    <string name="app_version">1.3</string>
     <string name="empty">Nothing to show</string>
 	<string name="button_login">Login</string>
 	<string name="button_start">Start</string>

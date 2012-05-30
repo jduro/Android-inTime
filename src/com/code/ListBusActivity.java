@@ -40,20 +40,23 @@ public class ListBusActivity extends Activity {
 
 	private static final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 5; // in Meters
     private static final long MINIMUM_TIME_BETWEEN_UPDATES = 10000; // in Milliseconds
-    private static final String SERVER_OLD = "http://ec2-75-101-189-134.compute-1.amazonaws.com:3000/bus_stops_by_coordinates";
-    private static final String SERVER = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/bus_stops_by_coordinates";
+    private static final String SERVER = "http://ec2-23-20-61-43.compute-1.amazonaws.com:3000/";
     
     ListBusActivity self;
     
+    // GPS
     protected LocationManager locationManager;
     protected MyLocationListener locationListener;
     
+    // List View and Adapter
     protected ListView lv;
     protected BusEntryAdapter busEntryAdapter;
     
+    // View Elements
     protected Button startButton;
     protected Button stopButton;
     protected TextView status;
+    protected TextView debug;
     protected ProgressBar pbar;
     
     String busStopId;
@@ -67,6 +70,8 @@ public class ListBusActivity extends Activity {
 	int choice=-1;
 	JSONArray stopsArray;
 	boolean startChoose=false;
+	
+	private final boolean DEBUG = true;
     
     private Time now;
 	
@@ -126,9 +131,10 @@ public class ListBusActivity extends Activity {
             }
         });
         
-        // Status
+        // Status & Debug
         now = new Time();
         status = (TextView) findViewById(R.id.listStatus);
+        debug = (TextView) findViewById(R.id.debug);
         
         // Location Manager
         if(isNetworkAvailable())
@@ -191,38 +197,19 @@ public class ListBusActivity extends Activity {
     private void updateList(List<BusEntry> list)
     {
     	// Display last update time
-		now.setToNow();
-		status.setText("Last update " + now.hour + ":" + now.minute + ":" + now.second);
+		status.setText("Last update " + time());
 		
         // Populate the list, through the adapter
     	busEntryAdapter.clear();
-//    	Toast.makeText(getApplicationContext(), "Checked in " + busEntryAdapter.getCount(), Toast.LENGTH_SHORT).show();
         
     	for(BusEntry entry : list) {
         	busEntryAdapter.add(entry);
         }
         
-    	/*
-    	 * Instead of before
-    	 * 
-    	for(final BusEntry entry : list) {
-        	busEntryAdapter.add(entry);
-        }
-    	 */
+
         
     }
   
-//    private List<BusEntry> getNewsEntries()
-//    {
-//    	List<BusEntry> entries = new ArrayList<BusEntry>();
-//    	    	 	
-//    	entries.add(new BusEntry("1", "24T", "Quinta da Nora", "4m20s", R.drawable.news_icon_1));
-//    	entries.add(new BusEntry("2", "7", "Tovim", "4m20s", R.drawable.news_icon_1));
-//    	entries.add(new BusEntry("3", "34", "Pólo II da Universidade", "4m20s", R.drawable.news_icon_2));
-//    	entries.add(new BusEntry("4", "37", "Hospitais UC", "4m20s", R.drawable.news_icon_1));
-//    	
-//    	return entries;
-//    }
     
     private boolean isNetworkAvailable()
     {
@@ -257,6 +244,9 @@ public class ListBusActivity extends Activity {
             content.close();
             json = sb.toString();
             
+            // DEBUG
+      		if(DEBUG)
+      			debug.append("\n" + time()+ ": "+ json);
             
             //Parse JSON
             JSONArray jArray=new JSONArray(json);
@@ -349,20 +339,6 @@ public class ListBusActivity extends Activity {
 							Toast.makeText(getApplicationContext(), items[choice], Toast.LENGTH_SHORT).show();
 						}
 						
-						
-						
-//						Toast.makeText(getApplicationContext(), "here", Toast.LENGTH_SHORT).show();
-//						AlertDialog alertDialog = new AlertDialog.Builder(this).create();  
-//					    alertDialog.setTitle("whats this?");  
-//					    alertDialog.setMessage("Please choose the bus stop where you are");
-//					    for(int i=0;i<jArray.length();i++){
-//				    		JSONObject jObj=(JSONObject) jArray.get(i);
-//						    alertDialog.setButton(jObj.get("name").toString(), new DialogInterface.OnClickListener() {  
-//						      public void onClick(DialogInterface dialog, int which) {  
-//						    	  Toast.makeText(getApplicationContext(), which, Toast.LENGTH_SHORT).show();
-//						    } });   
-//					    }
-//					    alertDialog.show();
 					}
 				}
 			}
@@ -392,32 +368,48 @@ public class ListBusActivity extends Activity {
     }
     
     
+    private String time()
+    {
+    	now.setToNow();
+    	String time = now.hour + ":" + now.minute + ":" + now.second;
+    	return time;
+    }
     
     
     private class MyLocationListener implements LocationListener {
     	
     	public void onLocationChanged(Location location)
     	{
+    		// HTTP
     		HttpClient hc = new DefaultHttpClient();
         	HttpGet request;
         	HttpResponse response;
         	InputStream content;
         	int responseCode;
+        	
         	List<BusEntry> busList;
         	pbar.setVisibility(View.VISIBLE);
+        	
+        	// DEBUG
+        	if(DEBUG)
+        		debug.append("\n\n" + time()+ ": Location changed");
+        	
         	try
         	{
-          		request = new HttpGet(SERVER + "?lat="+location.getLatitude()+"&lon="+location.getLongitude());
+          		request = new HttpGet(SERVER + "bus_stops_by_coordinates?lat="+location.getLatitude()+"&lon="+location.getLongitude());
           		request.setHeader("Accept", "application/json");
           		response = hc.execute(request);
           		content = response.getEntity().getContent();
           		responseCode = response.getStatusLine().getStatusCode();
           		
+          		// DEBUG
+          		if(DEBUG)
+          			debug.append("\n" + time()+ ": Content Type"+ response.getEntity().getContentType().toString());
+          		
           		if(responseCode == HttpStatus.SC_OK)
           		{
           			busList = parseJSON(content);
           			updateList(busList);
-//          			status.setText(SERVER + "?lat="+location.getLatitude()+"&lon="+location.getLongitude());
           		}
           		else
           			status.setText("Code " + responseCode);
